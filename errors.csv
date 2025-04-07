@@ -1,0 +1,5 @@
+Error Code,Error Message,Cause,Resolution Steps
+ERR_101,Database connection failed,The database service is down or misconfigured,Restart the database service and check connection settings.
+ERR_102,Memory limit exceeded,Process used more memory than allowed,Increase memory allocation or optimize the application.
+ERR_103,Service unavailable (503),The upstream service is not responding,Check backend health and restart if needed.
+ERR_104,Disk space full,No disk space left on the server,Delete unnecessary files or extend the disk space.
