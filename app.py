@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-import os
 from sentence_transformers import SentenceTransformer, util
 import streamlit.components.v1 as components
 
-# Set config FIRST
-st.set_page_config(page_title="Ask Niel", layout="centered")
+# Make sure this is the very first Streamlit command!
+st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 
 # Load model and data
 @st.cache_data
@@ -17,12 +16,25 @@ def load_data():
 
 df, model = load_data()
 
-# Load the chat component
-with open(os.path.join("chat_component", "index.html"), "r") as f:
-    chat_html = f.read()
+# App title
+st.title("🤖 Ask Niel")
 
-# Receive input using streamlit_component
-query = components.html(chat_html, height=450)
+# Embed the HTML chat component from index.html in the same folder
+with open("index.html", "r") as f:
+    html_string = f.read()
+components.html(html_string, height=500)
 
-# Optional: Show result when query is received
-# We'll simulate query processing next
+# Input field from the Streamlit interface (fallback if needed)
+query = st.text_input("Or type here if the chat is unresponsive:", "")
+
+# Show best match if query is entered
+if query:
+    query_embedding = model.encode(query, convert_to_tensor=True)
+    scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
+    best_idx = scores.index(max(scores))
+
+    st.subheader("🔍 Best Match Found")
+    st.write(f"**Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.write(f"**Error Message:** {df.iloc[best_idx]['Error Message']}")
+    st.write(f"**Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.write(f"**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
