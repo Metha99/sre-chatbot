@@ -87,7 +87,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Title
-st.title("🔧 SRE Error Helper")
+st.title("🔧 Ask Niel")
 
 # Input box
 query = st.text_input("Enter the error you're seeing:")
