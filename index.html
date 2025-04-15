@@ -1,76 +1,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    #niel-chat {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 320px;
+      background: #121212;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      z-index: 9999;
+    }
 
-        #chat-box {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 300px;
-            background-color: #1f1f1f;
-            color: white;
-            border-radius: 16px;
-            box-shadow: 0 0 20px #00ffcc;
-            padding: 15px;
-            font-family: 'Arial', sans-serif;
-            z-index: 9999;
-        }
+    #niel-header {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      background: #1f1f1f;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
 
-        #avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-image: url('https://i.pinimg.com/originals/4f/ab/88/4fab88d0a3e8b7b3ff72b5be6c000106.gif');
-            background-size: cover;
-            margin-bottom: 10px;
-        }
+    #niel-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-image: url('https://i.pinimg.com/originals/4f/ab/88/4fab88d0a3e8b7b3ff72b5be6c000106.gif');
+      background-size: cover;
+      margin-right: 10px;
+    }
 
-        #chat-input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-        }
+    #niel-body {
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
 
-        #send-btn {
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            background-color: #00ffcc;
-            color: black;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+    #niel-input {
+      display: flex;
+      border-top: 1px solid #333;
+    }
 
-        #send-btn:hover {
-            background-color: #00e6b8;
-        }
-    </style>
+    #niel-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-bottom-left-radius: 16px;
+      outline: none;
+      background: #1e1e1e;
+      color: #fff;
+    }
+
+    #niel-input button {
+      background: #00ffcc;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom-right-radius: 16px;
+      color: #000;
+      font-weight: bold;
+    }
+
+    #niel-input button:hover {
+      background: #00ccaa;
+    }
+  </style>
 </head>
 <body>
-    <div id="chat-box">
-        <div id="avatar"></div>
-        <input type="text" id="chat-input" placeholder="Ask me something..." />
-        <button id="send-btn" onclick="sendMessage()">Ask Niel</button>
-    </div>
 
-    <script>
-        function sendMessage() {
-            const input = document.getElementById("chat-input").value;
-            if (input.trim() !== "") {
-                // Redirect with query string
-                window.location.href = window.location.pathname + "?q=" + encodeURIComponent(input);
-            }
-        }
-    </script>
+<div id="niel-chat">
+  <div id="niel-header">
+    <div id="niel-avatar"></div>
+    Ask Niel
+  </div>
+  <div id="niel-body">
+    <p><strong>Ask Niel:</strong> Hello! What error are you seeing?</p>
+  </div>
+  <div id="niel-input">
+    <input type="text" id="niel-text" placeholder="Type your error..." />
+    <button onclick="sendToStreamlit()">Send</button>
+  </div>
+</div>
+
+<script>
+  const body = document.getElementById('niel-body');
+
+  function sendToStreamlit() {
+    const msg = document.getElementById("niel-text").value;
+    if (!msg.trim()) return;
+
+    body.innerHTML += `<p><strong>You:</strong> ${msg}</p>`;
+    body.innerHTML += `<p><em>Typing...</em></p>`;
+    window.location.href = window.location.pathname + "?q=" + encodeURIComponent(msg);
+  }
+
+  // Receive response from Streamlit
+  window.addEventListener("message", (event) => {
+    if (event.data.type === "niel_response") {
+      const typing = document.querySelector("#niel-body p:last-child");
+      if (typing && typing.innerText === "Typing...") typing.remove();
+      body.innerHTML += `<p>${event.data.message}</p>`;
+    }
+  });
+</script>
+
 </body>
 </html>
