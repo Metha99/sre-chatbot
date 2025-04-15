@@ -22,46 +22,63 @@ st.markdown("""
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #F4F6F9;
+            background: linear-gradient(135deg, #28313b, #485461); /* Gradient background */
+            color: #fff; /* Light text color */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         .stTextInput input {
-            font-size: 18px;
-            padding: 15px;
+            font-size: 20px;
+            padding: 20px;
             border-radius: 12px;
-            border: 1px solid #ccc;
-            width: 100%;
-            margin-top: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #4a90e2;
+            width: 80%; /* Wider search bar */
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+            color: white; /* White text */
         }
         .stTextInput input:focus {
-            border-color: #4a90e2;
+            border-color: #50C878; /* Emerald green focus */
         }
         .stButton>button {
             background-color: #4a90e2;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-size: 16px;
             border-radius: 8px;
             border: none;
+            margin-top: 20px;
+            transition: all 0.3s ease;
         }
         .stButton>button:hover {
             background-color: #357ab7;
+            transform: scale(1.05); /* Slight grow on hover */
         }
         .result-card {
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.15); /* Slight transparency */
             border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease-in-out;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         h1, h2 {
-            color: #333;
             font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+        .result-card h3 {
+            color: #50C878;
+        }
+        .result-card p {
+            color: #ccc; /* Lighter text for better contrast */
         }
         .stTextInput {
             width: 100%;
@@ -81,11 +98,11 @@ if query:
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
     
-    # Display result in a card style
+    # Display result in a modern card style
     st.markdown(f"""
     <div class="result-card">
         <h2><b>Best Match Found</b></h2>
-        <p><b>🔑 Error Code:</b> {df.iloc[best_idx]['Error Code']}</p>
+        <h3><b>🔑 Error Code:</b> {df.iloc[best_idx]['Error Code']}</h3>
         <p><b>💬 Error Message:</b> {df.iloc[best_idx]['Error Message']}</p>
         <p><b>⚠️ Likely Cause:</b> {df.iloc[best_idx]['Cause']}</p>
         <p><b>🔧 Suggested Fix:</b> {df.iloc[best_idx]['Resolution Steps']}</p>
