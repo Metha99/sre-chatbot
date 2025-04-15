@@ -9,7 +9,7 @@ st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 st.markdown("""
 <style>
 body {
-    background: linear-gradient(135deg, #1e1e1e, #121212); 
+    background: linear-gradient(135deg, #2b2b2b, #121212); 
     color: #e8e8e8;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
