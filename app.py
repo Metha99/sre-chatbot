@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-# Set page config FIRST!
+# ✅ Set page configuration first
 st.set_page_config(page_title="Ask Niel", page_icon="🔧", layout="centered")
 
-# 🔵 Custom CSS for styling
+# 🎨 Custom CSS for a futuristic glowing pulse and minimal theme
 st.markdown("""
     <style>
     body {
@@ -30,32 +30,42 @@ st.markdown("""
     .stMarkdown h1, .stMarkdown h2 {
         color: #58a6ff;
     }
-    .pulse-circle {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #00f5d4;
-        box-shadow: 0 0 0 rgba(0, 245, 212, 0.7);
-        animation: pulse-animation 1.6s infinite;
+
+    /* 🌐 Glowing Siri-like pulse */
+    .pulse-container {
+        display: flex;
+        justify-content: center;
+        margin: 40px 0 20px 0;
     }
-    @keyframes pulse-animation {
+    .pulse-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #00f5d4, #00c4a7);
+        box-shadow: 0 0 20px #00f5d4;
+        animation: pulse 1.6s infinite ease-in-out;
+    }
+    @keyframes pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.7);
+            transform: scale(1);
+            box-shadow: 0 0 20px #00f5d4;
         }
-        70% {
-            box-shadow: 0 0 0 20px rgba(0, 245, 212, 0);
+        50% {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px #00f5d4;
         }
         100% {
-            box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);
+            transform: scale(1);
+            box-shadow: 0 0 20px #00f5d4;
         }
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 🤖 Load the SentenceTransformer model
+# 🤖 Load embedding model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# 🧠 Load CSV and compute embeddings
+# 🧠 Load and process the CSV
 @st.cache_data
 def load_data():
     df = pd.read_csv("errors.csv")
@@ -64,32 +74,30 @@ def load_data():
 
 df = load_data()
 
-# 🌟 App title
+# 🧠 App title
 st.title("🤖 Ask Niel")
 
-# 🔍 User input
+# 🔍 Input field
 query = st.text_input("Enter the error you're seeing:")
 
-# 🔄 Typing placeholder with animation
+# ✨ Typing animation while searching
 typing_placeholder = st.empty()
 
 if query:
-    # Show glowing pulse while thinking
     typing_placeholder.markdown("""
-        <div style='display: flex; justify-content: center; margin-top: 30px; margin-bottom: 20px;'>
+        <div class="pulse-container">
             <div class="pulse-circle"></div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Compute similarity
+    # 🔍 Find the closest match
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
 
-    # Clear animation
     typing_placeholder.empty()
 
-    # Show result
+    # 🧾 Display results
     st.subheader("✅ Best Match Found")
     st.markdown(f"**🔢 Error Code:** {df.iloc[best_idx]['Error Code']}")
     st.markdown(f"**📄 Error Message:** {df.iloc[best_idx]['Error Message']}")
