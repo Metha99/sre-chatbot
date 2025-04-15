@@ -27,21 +27,21 @@ body {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: radial-gradient(circle, #00ff99, #0099cc);
-    box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc, 0 0 140px #00ff99;
+    background: radial-gradient(circle, #9c27b0, #673ab7);  /* Purplish gradient */
+    box-shadow: 0 0 80px #9c27b0, 0 0 120px #673ab7, 0 0 140px #9c27b0;
     animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc; }
-    50% { transform: scale(1.2); box-shadow: 0 0 150px #00ff99, 0 0 200px #0099cc; }
-    100% { transform: scale(1); box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc; }
+    0% { transform: scale(1); box-shadow: 0 0 80px #9c27b0, 0 0 120px #673ab7; }
+    50% { transform: scale(1.2); box-shadow: 0 0 150px #9c27b0, 0 0 200px #673ab7; }
+    100% { transform: scale(1); box-shadow: 0 0 80px #9c27b0, 0 0 120px #673ab7; }
 }
 
 input {
     background-color: #333333 !important;
     color: #ffffff !important;
-    border: 1px solid #00ff99 !important;
+    border: 1px solid #9c27b0 !important;
     border-radius: 10px !important;
     padding: 12px 20px !important;
     font-size: 16px !important;
@@ -50,24 +50,24 @@ input {
 }
 
 input:focus {
-    border-color: #00ffcc !important;
-    box-shadow: 0 0 8px 4px rgba(0, 255, 204, 0.3) !important;
+    border-color: #9c27b0 !important;
+    box-shadow: 0 0 8px 4px rgba(156, 39, 176, 0.3) !important;
 }
 
 h1 {
     text-align: center;
-    color: #00ff99;
+    color: #9c27b0;
     font-size: 2.5rem;
     font-weight: 600;
     margin-top: 30px;
 }
 
 h2, h3 {
-    color: #0099cc;
+    color: #673ab7;
 }
 
 button {
-    background-color: #00ff99;
+    background-color: #9c27b0;
     color: #121212;
     border-radius: 8px;
     border: none;
@@ -79,7 +79,7 @@ button {
 }
 
 button:hover {
-    background-color: #0099cc;
+    background-color: #673ab7;
     color: white;
 }
 
@@ -92,7 +92,7 @@ button:active {
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(156, 39, 176, 0.2);
     font-size: 1.1rem;
     max-width: 600px;
     margin-left: auto;
@@ -100,7 +100,7 @@ button:active {
 }
 
 .result-card h3 {
-    color: #00ff99;
+    color: #9c27b0;
     font-size: 1.3rem;
     margin-bottom: 10px;
 }
@@ -121,7 +121,7 @@ button:active {
     width: 10px;
     height: 10px;
     margin: 0 5px;
-    background-color: #00ff99;
+    background-color: #9c27b0;
     border-radius: 50%;
     animation: blink 1.4s infinite both;
 }
@@ -148,13 +148,6 @@ st.markdown("<h1>Ask Niel 🤖</h1>", unsafe_allow_html=True)
 st.markdown("""
 <div class="pulse-wrapper">
     <div class="pulse-circle"></div>
-</div>
-""", unsafe_allow_html=True)
-
-# Add GIF below the circle (just under the glowing circle)
-st.markdown("""
-<div style="text-align:center;">
-    <img src="">
 </div>
 """, unsafe_allow_html=True)
 
