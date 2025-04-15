@@ -9,9 +9,11 @@ st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 st.markdown("""
 <style>
 body {
-    background-color: #1a1a1a;
+    background: linear-gradient(135deg, #2a2a2a, #141414); 
     color: #e8e8e8;
     font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 .pulse-wrapper {
@@ -43,6 +45,7 @@ input {
     border-radius: 8px !important;
     padding: 12px 20px !important;
     font-size: 16px !important;
+    transition: 0.3s ease;
 }
 
 input:focus {
@@ -79,6 +82,26 @@ button:hover {
 
 button:active {
     transform: scale(0.95);
+}
+
+.result-card {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.result-card h3 {
+    color: #00f5d4;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.result-card p {
+    color: #e8e8e8;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -154,7 +177,7 @@ if query:
 
     # Show results
     st.markdown("### 🔍 Best Match Found")
-    st.write(f"**Error Code:** {df.iloc[best_idx]['Error Code']}")
-    st.write(f"**Error Message:** {df.iloc[best_idx]['Error Message']}")
-    st.write(f"**Likely Cause:** {df.iloc[best_idx]['Cause']}")
-    st.write(f"**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
+    st.markdown(f"<div class='result-card'><h3>**Error Code:** {df.iloc[best_idx]['Error Code']}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p>**Error Message:** {df.iloc[best_idx]['Error Message']}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p>**Likely Cause:** {df.iloc[best_idx]['Cause']}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p>**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}</p></div>", unsafe_allow_html=True)
