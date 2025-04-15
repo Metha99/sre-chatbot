@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer, util
 # Set page config FIRST
 st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 
-# 🌟 Move glowing circle below the title
+# 🌟 Adjusting layout for a clean, minimal look
 st.markdown("""
 <style>
 body {
@@ -24,8 +24,8 @@ body {
 }
 
 .pulse-circle {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: radial-gradient(circle, #00ff99, #0099cc);
     box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc, 0 0 140px #00ff99;
@@ -57,9 +57,9 @@ input:focus {
 h1 {
     text-align: center;
     color: #00ff99;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 600;
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 h2, h3 {
@@ -90,22 +90,25 @@ button:active {
 .result-card {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
-    padding: 25px;
-    margin-top: 30px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .result-card h3 {
     color: #00ff99;
-    font-size: 1.4rem;
-    margin-bottom: 15px;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
 }
 
 .result-card p {
     color: #e8e8e8;
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 10px;
+    line-height: 1.6;
+    margin-bottom: 8px;
 }
 
 .typing-animation {
