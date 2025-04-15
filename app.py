@@ -9,8 +9,8 @@ st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 st.markdown("""
 <style>
 body {
-    background-color: #0f0f0f;
-    color: #f0f0f0;
+    background-color: #1a1a1a;
+    color: #e8e8e8;
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -22,29 +22,69 @@ body {
 }
 
 .pulse-circle {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: radial-gradient(circle, #00f5d4, #00c4a7);
-    box-shadow: 0 0 60px #00f5d4, 0 0 80px #00c4a7;
-    animation: pulse 1.8s infinite ease-in-out;
+    background: radial-gradient(circle, #9c00ff, #00f5d4);
+    box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4, 0 0 140px #9c00ff;
+    animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 60px #00f5d4, 0 0 80px #00c4a7; }
-    50% { transform: scale(1.15); box-shadow: 0 0 90px #00f5d4, 0 0 120px #00c4a7; }
-    100% { transform: scale(1); box-shadow: 0 0 60px #00f5d4, 0 0 80px #00c4a7; }
+    0% { transform: scale(1); box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4; }
+    50% { transform: scale(1.2); box-shadow: 0 0 150px #9c00ff, 0 0 200px #00f5d4; }
+    100% { transform: scale(1); box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4; }
 }
 
 input {
-    background-color: #1e1e1e !important;
-    color: #f0f0f0 !important;
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #00f5d4 !important;
+    border-radius: 8px !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+}
+
+input:focus {
+    border-color: #9c00ff !important;
+    box-shadow: 0 0 8px 4px rgba(156, 0, 255, 0.3) !important;
+}
+
+h1 {
+    text-align: center;
+    color: #00f5d4;
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+h2, h3 {
+    color: #9c00ff;
+}
+
+button {
+    background-color: #00f5d4;
+    color: #1a1a1a;
+    border-radius: 6px;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #9c00ff;
+    color: white;
+}
+
+button:active {
+    transform: scale(0.95);
 }
 </style>
 """, unsafe_allow_html=True)
 
 # Title
-st.markdown("<h1 style='text-align: center; color: #00f5d4;'>Ask Niel 🤖</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Ask Niel 🤖</h1>", unsafe_allow_html=True)
 
 # 🌟 Glowing Circle Below the Title (new positioning)
 st.markdown("""
@@ -84,7 +124,7 @@ if query:
         width: 8px;
         height: 8px;
         margin: 0 4px;
-        background-color: #00f5d4;
+        background-color: #9c00ff;
         border-radius: 50%;
         animation: blink 1.4s infinite both;
     }
