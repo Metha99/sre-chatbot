@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
+# Set page configuration (MUST be the first Streamlit command)
+st.set_page_config(page_title="SRE Error Helper", page_icon="🔧", layout="centered")
+
 # Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -65,9 +68,6 @@ st.markdown("""
         }
     </style>
     """, unsafe_allow_html=True)
-
-# Set page configuration
-st.set_page_config(page_title="SRE Error Helper", page_icon="🔧", layout="centered")
 
 # Title
 st.title("🔧 SRE Error Helper")
