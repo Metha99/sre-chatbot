@@ -2,13 +2,89 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-# Set page configuration (MUST be the first Streamlit command)
-st.set_page_config(page_title="Ask Niel", page_icon="🔧", layout="centered")
+# Page setup - must be first Streamlit command
+st.set_page_config(page_title="Ask Niel – AI SRE Helper", page_icon="🤖", layout="centered")
+
+# 🔧 Modern futuristic UI styling
+st.markdown("""
+    <style>
+        html, body, [class*="css"] {
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at 20% 20%, #111827, #0f172a);
+            color: #f8fafc;
+        }
+
+        .stTextInput>div>div>input {
+            width: 100% !important;
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #4ade80;
+            background: rgba(255, 255, 255, 0.05);
+            color: #f8fafc;
+        }
+
+        .stTextInput>div>div>input:focus {
+            border: 1px solid #38bdf8;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            background: -webkit-linear-gradient(45deg, #38bdf8, #4ade80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .result-card h2 {
+            color: #38bdf8;
+        }
+
+        .result-card p {
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+
+        @keyframes fadeIn {
+            0% {opacity: 0; transform: translateY(10px);}
+            100% {opacity: 1; transform: translateY(0);}
+        }
+
+        .stButton>button {
+            background-color: #4ade80;
+            color: black;
+            font-weight: 600;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .stButton>button:hover {
+            background-color: #22c55e;
+            transform: scale(1.05);
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Load data
+# Load and embed error data
 @st.cache_data
 def load_data():
     df = pd.read_csv("errors.csv")
@@ -17,94 +93,25 @@ def load_data():
 
 df = load_data()
 
-# Custom CSS for modern design and animations
-st.markdown("""
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #28313b, #485461); /* Gradient background */
-            color: #fff; /* Light text color */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        .stTextInput input {
-            font-size: 20px;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #4a90e2;
-            width: 80%; /* Wider search bar */
-            margin-top: 40px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
-            color: white; /* White text */
-        }
-        .stTextInput input:focus {
-            border-color: #50C878; /* Emerald green focus */
-        }
-        .stButton>button {
-            background-color: #4a90e2;
-            color: white;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: none;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-        .stButton>button:hover {
-            background-color: #357ab7;
-            transform: scale(1.05); /* Slight grow on hover */
-        }
-        .result-card {
-            background-color: rgba(255, 255, 255, 0.15); /* Slight transparency */
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .result-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        h1, h2 {
-            font-family: 'Poppins', sans-serif;
-            color: #fff;
-        }
-        .result-card h3 {
-            color: #50C878;
-        }
-        .result-card p {
-            color: #ccc; /* Lighter text for better contrast */
-        }
-        .stTextInput {
-            width: 100%;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+# App title
+st.title("🤖 Ask Niel – AI SRE Assistant")
 
-# Title
-st.title("🔧 Ask Niel")
+# Search bar
+query = st.text_input("What error are you facing?")
 
-# Input box
-query = st.text_input("Enter the error you're seeing:")
-
-# When the user enters a query
+# Handle query
 if query:
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
-    
-    # Display result in a modern card style
+
+    # Display best match result
     st.markdown(f"""
     <div class="result-card">
-        <h2><b>Best Match Found</b></h2>
-        <h3><b>🔑 Error Code:</b> {df.iloc[best_idx]['Error Code']}</h3>
-        <p><b>💬 Error Message:</b> {df.iloc[best_idx]['Error Message']}</p>
-        <p><b>⚠️ Likely Cause:</b> {df.iloc[best_idx]['Cause']}</p>
-        <p><b>🔧 Suggested Fix:</b> {df.iloc[best_idx]['Resolution Steps']}</p>
+        <h2>🧠 Best Match Found</h2>
+        <p><strong>🔑 Error Code:</strong> {df.iloc[best_idx]['Error Code']}</p>
+        <p><strong>💬 Message:</strong> {df.iloc[best_idx]['Error Message']}</p>
+        <p><strong>⚠️ Cause:</strong> {df.iloc[best_idx]['Cause']}</p>
+        <p><strong>🛠 Resolution:</strong> {df.iloc[best_idx]['Resolution Steps']}</p>
     </div>
     """, unsafe_allow_html=True)
