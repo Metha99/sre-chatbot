@@ -154,7 +154,7 @@ st.markdown("""
 # Add GIF below the circle (just under the glowing circle)
 st.markdown("""
 <div style="text-align:center;">
-    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3pxZmc4YTF4NmRubWt0ajIyNG04aHdiamV5cWx3YWFxdXFlcTZnbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YaiYxMzWNgtg8iNaAm/giphy.gif" width="200" height="200">
+    <img src="">
 </div>
 """, unsafe_allow_html=True)
 
