@@ -111,7 +111,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ------------------ ACTUAL APP ------------------ #
-st.title("🤖 Ask Niel – Your AI SRE Assistant")
+st.title("🤖 Ask Niel")
 st.markdown('<div class="siri-circle"></div>', unsafe_allow_html=True)
 
 # Load model
