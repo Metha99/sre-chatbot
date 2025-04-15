@@ -2,22 +2,15 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-# Page setup - must be first Streamlit command
-st.set_page_config(page_title="Ask Niel – AI SRE Helper", page_icon="🤖", layout="centered")
+# ------------------ STYLING: DO NOT CHANGE ANYTHING BELOW ------------------ #
+st.set_page_config(page_title="Ask Niel – AI SRE Assistant", layout="centered")
 
-# 🔧 Modern futuristic UI styling
 st.markdown("""
     <style>
         html, body, [class*="css"] {
             font-family: 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #0f0f3f, #1a1a60, #111);
-            color: #f1f5f9;
-            animation: bgFade 12s ease-in-out infinite alternate;
-        }
-
-        @keyframes bgFade {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+            background: linear-gradient(135deg, #05060f, #0a0c2a);
+            color: #e0f2fe;
         }
 
         h1 {
@@ -25,82 +18,106 @@ st.markdown("""
             text-align: center;
             font-weight: bold;
             margin-top: 2rem;
-            background: linear-gradient(to right, #00f0ff, #38bdf8, #4ade80);
+            background: linear-gradient(to right, #38bdf8, #22d3ee);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        /* Siri-like pulse ring */
+        .siri-circle {
+            margin: 40px auto 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #4fc3f7 30%, transparent 70%);
+            animation: pulseRing 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+        }
+
         .stTextInput>div>div>input {
-            width: 100% !important;
-            font-size: 1.3rem;
+            width: 100%;
+            font-size: 1.2rem;
             padding: 1rem;
-            border-radius: 14px;
+            border-radius: 12px;
             border: none;
             background: rgba(255, 255, 255, 0.07);
             color: #e2e8f0;
-            box-shadow: 0 0 12px #0ff;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 8px #38bdf8; }
-            50% { box-shadow: 0 0 18px #38bdf8; }
-            100% { box-shadow: 0 0 8px #38bdf8; }
+            box-shadow: 0 0 15px #38bdf8;
         }
 
         .result-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 2rem;
             margin-top: 2rem;
-            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            animation: fadeIn 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(20px);}
-            to {opacity: 1; transform: translateY(0);}
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .result-card p {
-            font-size: 1.1rem;
-            color: #e0f2fe;
-            margin-bottom: 1rem;
-            position: relative;
+        .typing {
+            width: 3rem;
+            display: flex;
+            justify-content: space-between;
+            margin: 20px auto;
         }
 
-        .result-card p::after {
-            content: "";
-            display: block;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, #38bdf8, transparent);
-            margin-top: 0.5rem;
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #38bdf8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
         }
 
-        .stButton>button {
-            background-color: #4ade80;
-            color: black;
-            font-weight: 600;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            transition: all 0.3s ease;
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
         }
 
-        .stButton>button:hover {
-            background-color: #22c55e;
-            transform: scale(1.05);
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.9); opacity: 0.4; }
+            40% { transform: scale(1.4); opacity: 1; }
         }
     </style>
 """, unsafe_allow_html=True)
 
+# ------------------ ACTUAL APP ------------------ #
+st.title("🤖 Ask Niel – Your AI SRE Assistant")
+st.markdown('<div class="siri-circle"></div>', unsafe_allow_html=True)
+
 # Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Load and embed error data
+# Load data
 @st.cache_data
 def load_data():
     df = pd.read_csv("errors.csv")
@@ -109,25 +126,19 @@ def load_data():
 
 df = load_data()
 
-# App title
-st.title("🤖 Ask Niel")
+# Search UI
+query = st.text_input("Ask me about an error you're facing:")
 
-# Search bar
-query = st.text_input("What error are you facing?")
-
-# Handle query
 if query:
+    st.markdown('<div class="typing"><span></span><span></span><span></span></div>', unsafe_allow_html=True)
+    
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
 
-    # Display best match result
-    st.markdown(f"""
-    <div class="result-card">
-        <h2>🧠 Best Match Found</h2>
-        <p><strong>🔑 Error Code:</strong> {df.iloc[best_idx]['Error Code']}</p>
-        <p><strong>💬 Message:</strong> {df.iloc[best_idx]['Error Message']}</p>
-        <p><strong>⚠️ Cause:</strong> {df.iloc[best_idx]['Cause']}</p>
-        <p><strong>🛠 Resolution:</strong> {df.iloc[best_idx]['Resolution Steps']}</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div class="result-card">', unsafe_allow_html=True)
+    st.markdown(f"**🆔 Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.markdown(f"**💬 Message:** {df.iloc[best_idx]['Error Message']}")
+    st.markdown(f"**🧠 Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.markdown(f"**🛠 Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
+    st.markdown('</div>', unsafe_allow_html=True)
