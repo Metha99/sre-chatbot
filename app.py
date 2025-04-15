@@ -138,6 +138,15 @@ button:active {
     0%, 80%, 100% { opacity: 0; }
     40% { opacity: 1; }
 }
+
+#chat-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3pxZmc4YTF4NmRubWt0ajIyNG04aHdiamV5cWx3YWFxdXFlcTZnbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YaiYxMzWNgtg8iNaAm/giphy.gif');
+    background-size: cover;
+    background-position: center;
+}
 </style>
 """, unsafe_allow_html=True)
 
