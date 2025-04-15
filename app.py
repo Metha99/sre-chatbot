@@ -9,59 +9,75 @@ st.set_page_config(page_title="Ask Niel – AI SRE Helper", page_icon="🤖", la
 st.markdown("""
     <style>
         html, body, [class*="css"] {
-            font-family: 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at 20% 20%, #111827, #0f172a);
-            color: #f8fafc;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0f3f, #1a1a60, #111);
+            color: #f1f5f9;
+            animation: bgFade 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgFade {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 2rem;
+            background: linear-gradient(to right, #00f0ff, #38bdf8, #4ade80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .stTextInput>div>div>input {
             width: 100% !important;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             padding: 1rem;
-            border-radius: 12px;
-            border: 1px solid #4ade80;
-            background: rgba(255, 255, 255, 0.05);
-            color: #f8fafc;
+            border-radius: 14px;
+            border: none;
+            background: rgba(255, 255, 255, 0.07);
+            color: #e2e8f0;
+            box-shadow: 0 0 12px #0ff;
+            animation: pulse 2s infinite;
         }
 
-        .stTextInput>div>div>input:focus {
-            border: 1px solid #38bdf8;
-            box-shadow: 0 0 10px #38bdf8;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: 700;
-            background: -webkit-linear-gradient(45deg, #38bdf8, #4ade80);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-top: 2rem;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 8px #38bdf8; }
+            50% { box-shadow: 0 0 18px #38bdf8; }
+            100% { box-shadow: 0 0 8px #38bdf8; }
         }
 
         .result-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 2rem;
             margin-top: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        .result-card h2 {
-            color: #38bdf8;
-        }
-
-        .result-card p {
-            margin-bottom: 1rem;
-            color: #e2e8f0;
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            animation: fadeIn 0.8s ease-out;
         }
 
         @keyframes fadeIn {
-            0% {opacity: 0; transform: translateY(10px);}
-            100% {opacity: 1; transform: translateY(0);}
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .result-card p {
+            font-size: 1.1rem;
+            color: #e0f2fe;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .result-card p::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #38bdf8, transparent);
+            margin-top: 0.5rem;
         }
 
         .stButton>button {
@@ -70,8 +86,8 @@ st.markdown("""
             font-weight: 600;
             border: none;
             padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            transition: all 0.3s ease-in-out;
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
 
         .stButton>button:hover {
