@@ -3,7 +3,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
 # Page setup - must be first Streamlit command
-st.set_page_config(page_title="Ask Niel – AI SRE Helper", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Ask Niel, page_icon="🤖", layout="centered")
 
 # 🔧 Modern futuristic UI styling
 st.markdown("""
