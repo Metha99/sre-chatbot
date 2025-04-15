@@ -9,7 +9,7 @@ st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 st.markdown("""
 <style>
 body {
-    background: linear-gradient(135deg, #2a2a2a, #141414); 
+    background: linear-gradient(135deg, #1e1e1e, #121212); 
     color: #e8e8e8;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
@@ -20,63 +20,66 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 40px 0 20px 0;
+    margin-top: 30px;
 }
 
 .pulse-circle {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: radial-gradient(circle, #9c00ff, #00f5d4);
-    box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4, 0 0 140px #9c00ff;
+    background: radial-gradient(circle, #00ff99, #0099cc);
+    box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc, 0 0 140px #00ff99;
     animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4; }
-    50% { transform: scale(1.2); box-shadow: 0 0 150px #9c00ff, 0 0 200px #00f5d4; }
-    100% { transform: scale(1); box-shadow: 0 0 80px #9c00ff, 0 0 120px #00f5d4; }
+    0% { transform: scale(1); box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc; }
+    50% { transform: scale(1.2); box-shadow: 0 0 150px #00ff99, 0 0 200px #0099cc; }
+    100% { transform: scale(1); box-shadow: 0 0 80px #00ff99, 0 0 120px #0099cc; }
 }
 
 input {
     background-color: #333333 !important;
     color: #ffffff !important;
-    border: 1px solid #00f5d4 !important;
-    border-radius: 8px !important;
+    border: 1px solid #00ff99 !important;
+    border-radius: 10px !important;
     padding: 12px 20px !important;
     font-size: 16px !important;
     transition: 0.3s ease;
+    width: 100%;
 }
 
 input:focus {
-    border-color: #9c00ff !important;
-    box-shadow: 0 0 8px 4px rgba(156, 0, 255, 0.3) !important;
+    border-color: #00ffcc !important;
+    box-shadow: 0 0 8px 4px rgba(0, 255, 204, 0.3) !important;
 }
 
 h1 {
     text-align: center;
-    color: #00f5d4;
+    color: #00ff99;
     font-size: 3rem;
     font-weight: 600;
+    margin-top: 60px;
 }
 
 h2, h3 {
-    color: #9c00ff;
+    color: #0099cc;
 }
 
 button {
-    background-color: #00f5d4;
-    color: #1a1a1a;
-    border-radius: 6px;
+    background-color: #00ff99;
+    color: #121212;
+    border-radius: 8px;
     border: none;
     padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-top: 30px;
 }
 
 button:hover {
-    background-color: #9c00ff;
+    background-color: #0099cc;
     color: white;
 }
 
@@ -86,22 +89,51 @@ button:active {
 
 .result-card {
     background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
 }
 
 .result-card h3 {
-    color: #00f5d4;
-    font-size: 1.3rem;
-    margin-bottom: 10px;
+    color: #00ff99;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
 }
 
 .result-card p {
     color: #e8e8e8;
-    font-size: 1rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+.typing-animation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.typing-animation span {
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    background-color: #00ff99;
+    border-radius: 50%;
+    animation: blink 1.4s infinite both;
+}
+
+.typing-animation span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-animation span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% { opacity: 0; }
+    40% { opacity: 1; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -135,34 +167,9 @@ query = st.text_input("Ask your error here:")
 typing_placeholder = st.empty()
 
 if query:
-    # Typing animation (optional – looks like typing dots)
+    # Show typing animation until results are fetched
     typing_placeholder.markdown("""
-    <style>
-    .typing {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-    .typing span {
-        width: 8px;
-        height: 8px;
-        margin: 0 4px;
-        background-color: #9c00ff;
-        border-radius: 50%;
-        animation: blink 1.4s infinite both;
-    }
-    .typing span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-    .typing span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-    @keyframes blink {
-        0%, 80%, 100% { opacity: 0; }
-        40% { opacity: 1; }
-    }
-    </style>
-    <div class="typing">
+    <div class="typing-animation">
         <span></span><span></span><span></span>
     </div>
     """, unsafe_allow_html=True)
@@ -175,7 +182,7 @@ if query:
     # Remove animation after results are fetched
     typing_placeholder.empty()
 
-    # Show results
+    # Show results in clean layout
     st.markdown("### 🔍 Best Match Found")
     st.markdown(f"<div class='result-card'><h3>**Error Code:** {df.iloc[best_idx]['Error Code']}</h3>", unsafe_allow_html=True)
     st.markdown(f"<p>**Error Message:** {df.iloc[best_idx]['Error Message']}</p>", unsafe_allow_html=True)
