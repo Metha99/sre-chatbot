@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
+    }
+    #chat-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 320px;
+      background-color: #1a1a1a;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,255,180,0.5);
+      overflow: hidden;
+      z-index: 9999;
+    }
+    #avatar {
+      width: 80px;
+      height: 80px;
+      background-image: url('https://i.pinimg.com/originals/4f/ab/88/4fab88d0a3e8b7b3ff72b5be6c000106.gif');
+      background-size: cover;
+      border-radius: 50%;
+      margin: 15px auto 0 auto;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0,255,180, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(0,255,180, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,255,180, 0); }
+    }
+    #chat-messages {
+      height: 180px;
+      overflow-y: auto;
+      color: white;
+      padding: 10px;
+    }
+    #user-input {
+      display: flex;
+      padding: 10px;
+      background-color: #111;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+    }
+    button {
+      margin-left: 10px;
+      padding: 10px 14px;
+      background-color: #00ffb4;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-box">
+    <div id="avatar"></div>
+    <div id="chat-messages"></div>
+    <div id="user-input">
+      <input type="text" id="input-box" placeholder="Ask Niel anything..."/>
+      <button onclick="sendMessage()">→</button>
+    </div>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById("chat-messages");
+
+    function sendMessage() {
+      const input = document.getElementById("input-box");
+      const msg = input.value;
+      if (!msg) return;
+
+      // Add message to chat
+      const userMsg = document.createElement("p");
+      userMsg.innerHTML = `<strong>You:</strong> ${msg}`;
+      messagesDiv.appendChild(userMsg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      // Send message to Streamlit
+      window.parent.postMessage({ isStreamlitMessage: true, type: 'query', text: msg }, '*');
+
+      // Clear input
+      input.value = "";
+    }
+
+    // Listen for responses from Streamlit
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "response") {
+        const botMsg = document.createElement("p");
+        botMsg.innerHTML = `<strong>Ask Niel:</strong> ${event.data.text}`;
+        messagesDiv.appendChild(botMsg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
