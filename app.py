@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
+# Set page config first, this must be the first command in the script
+st.set_page_config(page_title="SRE Error Helper", page_icon="🔧", layout="centered")
+
 # Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -113,7 +116,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title of the app
-st.set_page_config(page_title="SRE Error Helper", page_icon="🔧", layout="centered")
 st.title("🔧 Ask Niel")
 
 # Display the chat window with avatar
