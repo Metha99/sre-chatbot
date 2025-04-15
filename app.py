@@ -3,10 +3,10 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 import streamlit.components.v1 as components
 
-# Must be first!
+# Set page config (must be FIRST)
 st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 
-# Load data & model
+# Load model and data
 @st.cache_data
 def load_data():
     df = pd.read_csv("errors.csv")
@@ -16,26 +16,23 @@ def load_data():
 
 df, model = load_data()
 
-# Read input from query string
-query = st.experimental_get_query_params().get("q", [""])[0]
-
-# Title
-st.title("🤖 Ask Niel")
-
-# Embed HTML chat box
+# Inject the chat widget (index.html)
 with open("index.html", "r") as f:
-    html_string = f.read()
-components.html(html_string, height=400)
+    components.html(f.read(), height=450)
 
-# Only run logic if query exists
+# Read query from query string
+query = st.query_params.get("q", "")
+
+# Run only if query is provided (from the chat input)
 if query:
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
 
-    st.subheader("🔍 Best Match Found")
-    st.write(f"**You asked:** {query}")
-    st.write(f"**Error Code:** {df.iloc[best_idx]['Error Code']}")
-    st.write(f"**Error Message:** {df.iloc[best_idx]['Error Message']}")
-    st.write(f"**Likely Cause:** {df.iloc[best_idx]['Cause']}")
-    st.write(f"**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
+    # Return JSON for JavaScript to pick up later (optional)
+    st.markdown("### 🔍 Best Match Found")
+    st.markdown(f"**You asked:** {query}")
+    st.markdown(f"**Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.markdown(f"**Error Message:** {df.iloc[best_idx]['Error Message']}")
+    st.markdown(f"**Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.markdown(f"**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
