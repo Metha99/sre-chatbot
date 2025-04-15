@@ -185,9 +185,9 @@ if query:
     # Remove animation after results are fetched
     typing_placeholder.empty()
 
-    # Show results in clean layout
+    # Show results in clean layout without extra box
     st.markdown("### 🔍 Best Match Found")
-    st.markdown(f"<div class='result-card'><h3>**Error Code:** {df.iloc[best_idx]['Error Code']}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p>**Error Message:** {df.iloc[best_idx]['Error Message']}</p>", unsafe_allow_html=True)
-    st.markdown(f"<p>**Likely Cause:** {df.iloc[best_idx]['Cause']}</p>", unsafe_allow_html=True)
-    st.markdown(f"<p>**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}</p></div>", unsafe_allow_html=True)
+    st.markdown(f"**Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.markdown(f"**Error Message:** {df.iloc[best_idx]['Error Message']}")
+    st.markdown(f"**Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.markdown(f"**Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
