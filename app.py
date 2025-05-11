@@ -86,9 +86,17 @@ customer_input = st.text_input("Enter Customer Query:")
 
 # Extract just the customer name if extra context is given in the input
 def extract_customer_name(input_text):
-    # Extract customer name by splitting on known patterns like "Customer" or "case" and taking the first part.
-    # Example: "Customer Tetra is facing an issue" -> "Tetra"
-    customer_name = input_text.split()[1] if "Customer" in input_text else input_text.strip()
+    # We assume the customer name follows the word "customer" in the query
+    input_text = input_text.strip().lower()  # To handle case insensitivity
+    words = input_text.split()
+    
+    if 'customer' in words:
+        # Extract customer name after the word "customer"
+        customer_name = words[words.index('customer') + 1]
+    else:
+        # If no 'customer' word is found, use the whole input as the customer name
+        customer_name = input_text
+    
     return customer_name
 
 if customer_input:
