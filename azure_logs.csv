@@ -1,4 +1,4 @@
-Timestamp,Resource,Error Code,Message
-2024-05-01T10:15:00Z,VM-01,ERR1001,Virtual machine failed to start due to quota
-2024-05-02T14:32:00Z,WebApp-03,ERR2049,Web app exceeded allocated memory
-2024-05-03T09:45:00Z,SQL-DB-02,ERR3002,Connection timeout in SQL Server instance
+Incident_ID,Resource,OS,Subscription_ID,Error
+INC0697863,core-lnx-db01,Linux,sub-hub-AlphaCorp-CH-782349,SSH timeout from monitoring agent
+INC0697864,app-svc-lnx02,Linux,sub-hub-AlphaCorp-CH-782349,Application failed to bind to port
+INC0697865,WIN-SRV-APP01,Windows,sub-hub-AlphaCorp-CH-782350,WinRM authentication failure
