@@ -1,4 +1,4 @@
-Ticket ID,Summary,Category,Status,Resolution
-INC12345,VM Boot Issue,Infrastructure,Closed,Increased quota via Azure Portal
-INC12346,Deployment failure,Application,Closed,Updated IAM permissions in GitLab
-INC12347,Database connection timeout,Database,Closed,Restarted SQL service and updated config
+Incident_ID,Case_ID,Customer,Summary,Related_KB
+INC0697863,CS0395198,AlphaCorp,Customer unable to connect to Linux DB VM,KB0091001
+INC0697864,CS0395200,AlphaCorp,Deployment failed on app service node,KB0091002
+INC0697865,CS0395202,AlphaCorp,Notification: Windows patch successful,
