@@ -1,4 +1,4 @@
 Incident_ID,Error Code,Error Message,Cause,Resolution Steps
-INC0697863,ERR-LNX-SSH01,core-lnx-db01 unreachable via SSH,Blocked port or sshd service down,Check NSG rules, restart sshd, verify network reachability
-INC0697864,ERR-APP-FAIL02,app-svc-lnx02 failed to start due to port binding,Service already using port or permission denied,Kill conflicting process, check systemd logs, restart service
-INC0697865,INFO-WIN-DEPLOY,WIN-SRV-APP01 patch applied successfully,N/A,None required
+INC1001,ERR100,App deployment failed,Invalid pipeline config,Fix .gitlab-ci.yml syntax and re-run
+INC1002,ERR101,Web server down,Service crash,Restart the web server
+INC1003,ERR102,Database connection error,Database unreachable,Check DB server availability and connection settings
