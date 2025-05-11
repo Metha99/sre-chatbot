@@ -1,4 +1,4 @@
-Job ID,Status,Pipeline ID,Error Message,Timestamp
-9001,failed,4302,Deploy failed: insufficient permissions,2024-05-01T12:30:00Z
-9002,success,4303,Build succeeded,2024-05-02T09:00:00Z
-9003,failed,4304,Test suite failed due to DB connection error,2024-05-03T11:10:00Z
+Incident_ID,Job_ID,Pipeline_Name,Type,Status,Pipeline_URL,Related_KB
+INC0697863,GLJ1001,nightly-db-check,Health Check,Failed,https://placeholder.gitlab.com/project/pipeline/123,KB0091001
+INC0697864,GLJ1002,auto-deploy-svc,Deployment,Failed,https://placeholder.gitlab.com/project/pipeline/124,KB0091002
+INC0697865,GLJ1003,win-patch-rollout,Maintenance,Success,https://placeholder.gitlab.com/project/pipeline/125,
