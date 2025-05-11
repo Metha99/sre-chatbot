@@ -1,0 +1,4 @@
+Job ID,Status,Pipeline ID,Error Message,Timestamp
+9001,failed,4302,Deploy failed: insufficient permissions,2024-05-01T12:30:00Z
+9002,success,4303,Build succeeded,2024-05-02T09:00:00Z
+9003,failed,4304,Test suite failed due to DB connection error,2024-05-03T11:10:00Z
