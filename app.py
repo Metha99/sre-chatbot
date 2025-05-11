@@ -81,8 +81,17 @@ def display_customer_info(customer_name):
         else:
             st.markdown("### No relevant Knowledge Articles found for this customer.")
 
-# Input field for customer name
-customer_name = st.text_input("Enter Customer Name:")
+# Input field for customer name (allowing flexibility in the input)
+customer_input = st.text_input("Enter Customer Query:")
 
-if customer_name:
+# Extract just the customer name if extra context is given in the input
+def extract_customer_name(input_text):
+    # Extract customer name by splitting on known patterns like "Customer" or "case" and taking the first part.
+    # Example: "Customer Tetra is facing an issue" -> "Tetra"
+    customer_name = input_text.split()[1] if "Customer" in input_text else input_text.strip()
+    return customer_name
+
+if customer_input:
+    # Extract customer name
+    customer_name = extract_customer_name(customer_input)
     display_customer_info(customer_name)
