@@ -1,0 +1,4 @@
+Ticket ID,Summary,Category,Status,Resolution
+INC12345,VM Boot Issue,Infrastructure,Closed,Increased quota via Azure Portal
+INC12346,Deployment failure,Application,Closed,Updated IAM permissions in GitLab
+INC12347,Database connection timeout,Database,Closed,Restarted SQL service and updated config
