@@ -1,0 +1,4 @@
+Timestamp,Resource,Error Code,Message
+2024-05-01T10:15:00Z,VM-01,ERR1001,Virtual machine failed to start due to quota
+2024-05-02T14:32:00Z,WebApp-03,ERR2049,Web app exceeded allocated memory
+2024-05-03T09:45:00Z,SQL-DB-02,ERR3002,Connection timeout in SQL Server instance
