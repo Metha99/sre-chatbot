@@ -1,4 +1,5 @@
 Incident_ID,Case_ID,Customer,Summary,Related_KB
-INC1001,CS459823,Acme Corp,Production app down,KB0078522
-INC1002,CS459824,Global Tech,Web server crash,KB0078523
-INC1003,CS459825,DataCorp,Database connection issue,KB0078524
+INC1001,CS459823,Tetra,Production app down,KB0078522
+INC1002,CS459824,Tetra,Web server crash,KB0078523
+INC1003,CS459825,Tetra,Database connection issue,KB0078524
+INC1004,CS459826,Acme Corp,Web server crash,KB0078525
