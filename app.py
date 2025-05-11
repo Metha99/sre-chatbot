@@ -2,92 +2,87 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-st.set_page_config(page_title="Unified AI Dashboard", layout="centered")
+# Set page config
+st.set_page_config(page_title="SRE Chatbot", page_icon="🤖", layout="centered")
 
-st.markdown("""
-<style>
-h1 { color: #9c27b0; text-align: center; }
-.result-card {
-    background-color: #1e1e1e;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    color: #e0e0e0;
-    box-shadow: 0 0 10px rgba(156, 39, 176, 0.2);
-}
-</style>
-""", unsafe_allow_html=True)
+# Title for the page
+st.markdown("<h1 style='text-align: center;'>SRE Chatbot</h1>", unsafe_allow_html=True)
 
-st.markdown("<h1>🤖 Unified Incident Explorer</h1>", unsafe_allow_html=True)
-
-# Load model
+# Load model for semantic search (Optional, if you are searching queries based on similarity)
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
+# Load data from CSV files (adjust the paths to match your setup)
 @st.cache_data
 def load_data():
-    azure = pd.read_csv("azure_logs.csv")
-    gitlab = pd.read_csv("gitlab_jobs.csv")
-    snow = pd.read_csv("servicenow_tickets.csv")
-    errors = pd.read_csv("errors.csv")
+    # Load all the CSVs (adjust the filenames/paths accordingly)
+    azure_df = pd.read_csv("azure_logs.csv")
+    gitlab_df = pd.read_csv("gitlab_jobs.csv")
+    servicenow_df = pd.read_csv("servicenow_tickets.csv")
+    kb_df = pd.read_csv("knowledge_articles.csv")
+    return azure_df, gitlab_df, servicenow_df, kb_df
 
-    # Create a combined dataframe on Incident_ID
-    combined = pd.merge(errors, azure, on="Incident_ID", how="left")
-    combined = pd.merge(combined, gitlab, on="Incident_ID", how="left")
-    combined = pd.merge(combined, snow, on="Incident_ID", how="left")
+# Filter data based on customer input
+def filter_by_customer(customer_name):
+    azure_df, gitlab_df, servicenow_df, kb_df = load_data()
+    
+    # Filter all dataframes by customer name
+    azure_filtered = azure_df[azure_df['Customer'].str.contains(customer_name, case=False)]
+    gitlab_filtered = gitlab_df[gitlab_df['Customer'].str.contains(customer_name, case=False)]
+    servicenow_filtered = servicenow_df[servicenow_df['Customer'].str.contains(customer_name, case=False)]
+    kb_filtered = kb_df[kb_df['Customer'].str.contains(customer_name, case=False)]
+    
+    return azure_filtered, gitlab_filtered, servicenow_filtered, kb_filtered
 
-    combined["embedding"] = combined["Error Message"].apply(lambda x: model.encode(str(x), convert_to_tensor=True))
-    return combined
+# Display results based on customer query
+def display_customer_info(customer_name):
+    azure_filtered, gitlab_filtered, servicenow_filtered, kb_filtered = filter_by_customer(customer_name)
+    
+    # Show Azure resource details
+    if not azure_filtered.empty:
+        st.markdown("### Azure Resources")
+        for _, row in azure_filtered.iterrows():
+            st.markdown(f"**Resource:** {row['Resource']}")
+            st.markdown(f"**Status:** {row['Error']}")
+            st.markdown(f"**OS:** {row['OS']}")
+            st.markdown(f"**Subscription:** {row['Subscription_ID']}")
+            st.markdown("---")
+    else:
+        st.markdown("### No Azure resources found for this customer.")
+    
+    # Show recent GitLab pipeline jobs
+    if not gitlab_filtered.empty:
+        st.markdown("### Recent GitLab Pipelines")
+        for _, row in gitlab_filtered.iterrows():
+            st.markdown(f"**Pipeline Name:** {row['Pipeline_Name']}")
+            st.markdown(f"**Job Status:** {row['Status']}")
+            st.markdown(f"**Pipeline URL:** {row['Pipeline_URL']}")
+            st.markdown("---")
+    else:
+        st.markdown("### No recent GitLab pipelines found for this customer.")
+    
+    # Show open incidents and cases from ServiceNow
+    if not servicenow_filtered.empty:
+        st.markdown("### Open Incidents and Cases")
+        for _, row in servicenow_filtered.iterrows():
+            st.markdown(f"**Case ID:** {row['Case_ID']}")
+            st.markdown(f"**Summary:** {row['Summary']}")
+            st.markdown(f"**Related KB:** {row['Related_KB']}")
+            st.markdown("---")
+    else:
+        st.markdown("### No open incidents or cases found for this customer.")
+    
+    # Show relevant Knowledge articles
+    if not kb_filtered.empty:
+        st.markdown("### Suggested Knowledge Articles")
+        for _, row in kb_filtered.iterrows():
+            st.markdown(f"**Article Link:** [{row['Article_Link']}]")
+            st.markdown(f"**Summary:** {row['Summary']}")
+            st.markdown("---")
+    else:
+        st.markdown("### No relevant Knowledge Articles found for this customer.")
 
-data = load_data()
+# Input field for customer name
+customer_name = st.text_input("Enter Customer Name:")
 
-# Search box
-query = st.text_input("Ask about an incident, error, or keyword:")
-
-if query:
-    query_embedding = model.encode(query, convert_to_tensor=True)
-    scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in data["embedding"]]
-    best_idx = scores.index(max(scores))
-    result = data.iloc[best_idx]
-
-    st.markdown("""
-    <div class="result-card">
-    <h3>🔍 Best Match Found</h3>
-    <p><strong>Incident ID:</strong> {}</p>
-    <p><strong>Case ID:</strong> {}</p>
-    <p><strong>Customer:</strong> {}</p>
-    <p><strong>Error Code:</strong> {}</p>
-    <p><strong>Error Message:</strong> {}</p>
-    <p><strong>Likely Cause:</strong> {}</p>
-    <p><strong>Suggested Fix:</strong> {}</p>
-    <hr/>
-    <p><strong>Azure Resource:</strong> {} ({})</p>
-    <p><strong>Subscription:</strong> {}</p>
-    <p><strong>Azure Error:</strong> {}</p>
-    <hr/>
-    <p><strong>GitLab Job ID:</strong> {}</p>
-    <p><strong>Pipeline:</strong> {} ({}) - <strong>Status:</strong> {}</p>
-    <p><strong>Pipeline URL:</strong> <a href="{}" target="_blank">Open</a></p>
-    <hr/>
-    <p><strong>ServiceNow Summary:</strong> {}</p>
-    <p><strong>Knowledge Base Ref:</strong> {}</p>
-    </div>
-    """.format(
-        result['Incident_ID'],
-        result.get('Case_ID', 'N/A'),
-        result.get('Customer', 'N/A'),
-        result['Error Code'],
-        result['Error Message'],
-        result['Cause'],
-        result['Resolution Steps'],
-        result.get('Resource', 'N/A'),
-        result.get('OS', 'N/A'),
-        result.get('Subscription_ID', 'N/A'),
-        result.get('Error', 'N/A'),
-        result.get('Job_ID', 'N/A'),
-        result.get('Pipeline_Name', 'N/A'),
-        result.get('Type', 'N/A'),
-        result.get('Status', 'N/A'),
-        result.get('Pipeline_URL', '#'),
-        result.get('Summary', 'N/A'),
-        result.get('Related_KB', 'N/A')
-    ), unsafe_allow_html=True)
+if customer_name:
+    display_customer_info(customer_name)
