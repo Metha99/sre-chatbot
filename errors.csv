@@ -1,5 +1,4 @@
-Error Code,Error Message,Cause,Resolution Steps
-ERR_101,Database connection failed,The database service is down or misconfigured,Restart the database service and check connection settings.
-ERR_102,Memory limit exceeded,Process used more memory than allowed,Increase memory allocation or optimize the application.
-ERR_103,Service unavailable (503),The upstream service is not responding,Check backend health and restart if needed.
-ERR_104,Disk space full,No disk space left on the server,Delete unnecessary files or extend the disk space.
+Incident_ID,Error Code,Error Message,Cause,Resolution Steps
+INC0697863,ERR-LNX-SSH01,core-lnx-db01 unreachable via SSH,Blocked port or sshd service down,Check NSG rules, restart sshd, verify network reachability
+INC0697864,ERR-APP-FAIL02,app-svc-lnx02 failed to start due to port binding,Service already using port or permission denied,Kill conflicting process, check systemd logs, restart service
+INC0697865,INFO-WIN-DEPLOY,WIN-SRV-APP01 patch applied successfully,N/A,None required
