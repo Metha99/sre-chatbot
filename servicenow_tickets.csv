@@ -1,4 +1,4 @@
 Incident_ID,Case_ID,Customer,Summary,Related_KB
-INC0697863,CS0395198,AlphaCorp,Customer unable to connect to Linux DB VM,KB0091001
-INC0697864,CS0395200,AlphaCorp,Deployment failed on app service node,KB0091002
-INC0697865,CS0395202,AlphaCorp,Notification: Windows patch successful,
+INC1001,CS459823,Acme Corp,Production app down,KB0078522
+INC1002,CS459824,Global Tech,Web server crash,KB0078523
+INC1003,CS459825,DataCorp,Database connection issue,KB0078524
