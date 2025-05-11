@@ -3,7 +3,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
 # Set page config
-st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
+st.set_page_config(page_title="Unified Ai", page_icon="🤖", layout="centered")
 
 # Page styling (your original CSS)
 st.markdown("""<style> 
@@ -140,7 +140,7 @@ button:active {
 </style>""", unsafe_allow_html=True)
 
 # Title and animation
-st.markdown("<h1>Ask Niel 🤖</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Unified Ai 🤖</h1>", unsafe_allow_html=True)
 st.markdown("""<div class="pulse-wrapper"><div class="pulse-circle"></div></div>""", unsafe_allow_html=True)
 
 # Load Sentence Transformer model
