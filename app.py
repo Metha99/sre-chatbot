@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer, util
 # Set page config FIRST
 st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 
-# 🌟 Adjusting layout for a clean, minimal look
+# Adjusting layout
 st.markdown("""
 <style>
 body {
@@ -144,7 +144,7 @@ button:active {
 # Title
 st.markdown("<h1>Ask Niel 🤖</h1>", unsafe_allow_html=True)
 
-# 🌟 Glowing Circle Below the Title (new positioning)
+# Glowing Circle
 st.markdown("""
 <div class="pulse-wrapper">
     <div class="pulse-circle"></div>
