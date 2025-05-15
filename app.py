@@ -2,51 +2,52 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-# Must be first command!
-st.set_page_config(page_title="Ask Niel - SRE Helper", page_icon="🤖", layout="centered")
+# Set page config FIRST
+st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
 
-# Custom CSS for animations and styling
+# Elegant minimal style
 st.markdown("""
     <style>
-        body {
-            background-color: #0f1117;
-            color: white;
+        html, body {
+            background-color: #0e1117;
+            color: #f1f1f1;
         }
-        .glow {
-            font-size: 36px;
-            color: #0ff;
+        .title {
+            font-size: 2.5rem;
+            font-weight: 600;
             text-align: center;
-            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
-        }
-        .typing-dots {
-            display: inline-block;
-            animation: blink 1s infinite;
-            font-size: 24px;
-            margin-top: 10px;
-        }
-        @keyframes blink {
-            0% {opacity: 0;}
-            50% {opacity: 1;}
-            100% {opacity: 0;}
+            color: #00f5d4;
+            margin-top: 2rem;
+            text-shadow: 0px 0px 6px rgba(0, 245, 212, 0.4);
         }
         .glass-box {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        input {
-            background-color: #1c1e26 !important;
+        .dots {
+            font-size: 18px;
+            letter-spacing: 3px;
+            animation: blink 1.2s infinite steps(1, end);
+        }
+        @keyframes blink {
+            0%   { opacity: 0.2; }
+            50%  { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        input, textarea {
+            background-color: #1a1d23 !important;
             color: white !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# App title with glow effect
-st.markdown('<div class="glow">🤖 Ask Niel - Your AI SRE Assistant</div>', unsafe_allow_html=True)
+# Glowing Title
+st.markdown('<div class="title">🤖 Ask Niel</div>', unsafe_allow_html=True)
 
-# Load the model
+# Load embedding model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 @st.cache_data
@@ -57,28 +58,28 @@ def load_data():
 
 df = load_data()
 
-# Search input
-query = st.text_input("🔎 Describe the error you're seeing")
+# Input box
+query = st.text_input("What error are you seeing?", placeholder="Type an error message...")
 
-# Placeholder for typing animation
+# Typing placeholder
 typing_placeholder = st.empty()
 
-# Show results
 if query:
-    # Show typing animation
-    typing_placeholder.markdown('<div class="typing-dots">🤖 Thinking...</div>', unsafe_allow_html=True)
+    # Siri-style dots animation
+    typing_placeholder.markdown('<div class="dots">🤖 Thinking...</div>', unsafe_allow_html=True)
 
+    # Perform embedding similarity
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
 
-    # Clear the typing animation
+    # Clear typing animation
     typing_placeholder.empty()
 
-    # Display result in styled glass box
+    # Display response in elegant box
     with st.container():
         st.markdown('<div class="glass-box">', unsafe_allow_html=True)
-        st.markdown(f"### 🔍 Best Match Found")
+        st.markdown("### 🔍 Best Match Found")
         st.markdown(f"**🧾 Error Code:** {df.iloc[best_idx]['Error Code']}")
         st.markdown(f"**📣 Message:** {df.iloc[best_idx]['Error Message']}")
         st.markdown(f"**📌 Cause:** {df.iloc[best_idx]['Cause']}")
