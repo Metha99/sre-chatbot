@@ -2,54 +2,60 @@ import streamlit as st
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
-# Set page config FIRST
-st.set_page_config(page_title="Ask Niel", page_icon="🤖", layout="centered")
+# Set page config FIRST!
+st.set_page_config(page_title="Ask Niel", page_icon="🔧", layout="centered")
 
-# Elegant minimal style
+# 🔵 Custom CSS for styling
 st.markdown("""
     <style>
-        html, body {
-            background-color: #0e1117;
-            color: #f1f1f1;
+    body {
+        background-color: #0d1117;
+        color: #c9d1d9;
+    }
+    .main {
+        background-color: #0d1117;
+    }
+    .stTextInput > div > div > input {
+        background-color: #161b22;
+        color: #58a6ff;
+        border: 1px solid #30363d;
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 10px;
+    }
+    .stTextInput > label {
+        font-weight: bold;
+        color: #58a6ff;
+    }
+    .stMarkdown h1, .stMarkdown h2 {
+        color: #58a6ff;
+    }
+    .pulse-circle {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #00f5d4;
+        box-shadow: 0 0 0 rgba(0, 245, 212, 0.7);
+        animation: pulse-animation 1.6s infinite;
+    }
+    @keyframes pulse-animation {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.7);
         }
-        .title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            text-align: center;
-            color: #00f5d4;
-            margin-top: 2rem;
-            text-shadow: 0px 0px 6px rgba(0, 245, 212, 0.4);
+        70% {
+            box-shadow: 0 0 0 20px rgba(0, 245, 212, 0);
         }
-        .glass-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 25px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        100% {
+            box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);
         }
-        .dots {
-            font-size: 18px;
-            letter-spacing: 3px;
-            animation: blink 1.2s infinite steps(1, end);
-        }
-        @keyframes blink {
-            0%   { opacity: 0.2; }
-            50%  { opacity: 1; }
-            100% { opacity: 0.2; }
-        }
-        input, textarea {
-            background-color: #1a1d23 !important;
-            color: white !important;
-        }
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Glowing Title
-st.markdown('<div class="title">🤖 Ask Niel</div>', unsafe_allow_html=True)
-
-# Load embedding model
+# 🤖 Load the SentenceTransformer model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
+# 🧠 Load CSV and compute embeddings
 @st.cache_data
 def load_data():
     df = pd.read_csv("errors.csv")
@@ -58,30 +64,34 @@ def load_data():
 
 df = load_data()
 
-# Input box
-query = st.text_input("What error are you seeing?", placeholder="Type an error message...")
+# 🌟 App title
+st.title("🤖 Ask Niel")
 
-# Typing placeholder
+# 🔍 User input
+query = st.text_input("Enter the error you're seeing:")
+
+# 🔄 Typing placeholder with animation
 typing_placeholder = st.empty()
 
 if query:
-    # Siri-style dots animation
-    typing_placeholder.markdown('<div class="dots">🤖 Thinking...</div>', unsafe_allow_html=True)
+    # Show glowing pulse while thinking
+    typing_placeholder.markdown("""
+        <div style='display: flex; justify-content: center; margin-top: 30px; margin-bottom: 20px;'>
+            <div class="pulse-circle"></div>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # Perform embedding similarity
+    # Compute similarity
     query_embedding = model.encode(query, convert_to_tensor=True)
     scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
     best_idx = scores.index(max(scores))
 
-    # Clear typing animation
+    # Clear animation
     typing_placeholder.empty()
 
-    # Display response in elegant box
-    with st.container():
-        st.markdown('<div class="glass-box">', unsafe_allow_html=True)
-        st.markdown("### 🔍 Best Match Found")
-        st.markdown(f"**🧾 Error Code:** {df.iloc[best_idx]['Error Code']}")
-        st.markdown(f"**📣 Message:** {df.iloc[best_idx]['Error Message']}")
-        st.markdown(f"**📌 Cause:** {df.iloc[best_idx]['Cause']}")
-        st.markdown(f"**🛠️ Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Show result
+    st.subheader("✅ Best Match Found")
+    st.markdown(f"**🔢 Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.markdown(f"**📄 Error Message:** {df.iloc[best_idx]['Error Message']}")
+    st.markdown(f"**🧠 Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.markdown(f"**🛠 Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
