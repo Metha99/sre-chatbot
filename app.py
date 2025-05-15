@@ -1,105 +1,144 @@
 import streamlit as st
 import pandas as pd
+from sentence_transformers import SentenceTransformer, util
 
-# Set page config
-st.set_page_config(page_title="Unified AI", page_icon="🤖", layout="centered")
+# ------------------ STYLING: DO NOT CHANGE ANYTHING BELOW ------------------ #
+st.set_page_config(page_title="Ask Niel – AI SRE Assistant", layout="centered")
 
-# Title for the page
-st.markdown("<h1 style='text-align: center;'>Unified AI 🤖</h1>", unsafe_allow_html=True)
+st.markdown("""
+    <style>
+        html, body, [class*="css"] {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #05060f, #0a0c2a);
+            color: #e0f2fe;
+        }
 
-# Load data from CSV files (adjust the paths to match your setup)
+        h1 {
+            font-size: 2.8rem;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 2rem;
+            background: linear-gradient(to right, #38bdf8, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Siri-like pulse ring */
+        .siri-circle {
+            margin: 40px auto 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #4fc3f7 30%, transparent 70%);
+            animation: pulseRing 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+        }
+
+        .stTextInput>div>div>input {
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.07);
+            color: #e2e8f0;
+            box-shadow: 0 0 15px #38bdf8;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .typing {
+            width: 3rem;
+            display: flex;
+            justify-content: space-between;
+            margin: 20px auto;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #38bdf8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.9); opacity: 0.4; }
+            40% { transform: scale(1.4); opacity: 1; }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ------------------ ACTUAL APP ------------------ #
+st.title("🤖 Ask Niel – Your AI SRE Assistant")
+st.markdown('<div class="siri-circle"></div>', unsafe_allow_html=True)
+
+# Load model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Load data
 @st.cache_data
 def load_data():
-    # Load all the CSVs (adjust the filenames/paths accordingly)
-    azure_df = pd.read_csv("azure_logs.csv")
-    gitlab_df = pd.read_csv("gitlab_jobs.csv")
-    servicenow_df = pd.read_csv("servicenow_tickets.csv")
-    kb_df = pd.read_csv("knowledge_articles.csv")
-    return azure_df, gitlab_df, servicenow_df, kb_df
+    df = pd.read_csv("errors.csv")
+    df["embedding"] = df["Error Message"].apply(lambda x: model.encode(x, convert_to_tensor=True))
+    return df
 
-# Filter data based on exact customer name match
-def filter_by_customer(customer_name):
-    azure_df, gitlab_df, servicenow_df, kb_df = load_data()
-    
-    # Exact match on customer name (case-insensitive)
-    azure_filtered = azure_df[azure_df['Customer'].str.contains(customer_name, case=False, na=False)]
-    gitlab_filtered = gitlab_df[gitlab_df['Customer'].str.contains(customer_name, case=False, na=False)]
-    servicenow_filtered = servicenow_df[servicenow_df['Customer'].str.contains(customer_name, case=False, na=False)]
-    kb_filtered = kb_df[kb_df['Customer'].str.contains(customer_name, case=False, na=False)]
-    
-    return azure_filtered, gitlab_filtered, servicenow_filtered, kb_filtered
+df = load_data()
 
-# Display results based on customer query
-def display_customer_info(customer_name):
-    azure_filtered, gitlab_filtered, servicenow_filtered, kb_filtered = filter_by_customer(customer_name)
-    
-    if azure_filtered.empty and gitlab_filtered.empty and servicenow_filtered.empty and kb_filtered.empty:
-        st.markdown(f"### No data found for customer: **{customer_name}**")
-    else:
-        # Show Azure resource details
-        if not azure_filtered.empty:
-            st.markdown("### Azure Resources")
-            for _, row in azure_filtered.iterrows():
-                st.markdown(f"**Resource:** {row['Resource']}")
-                st.markdown(f"**Status:** {row['Error']}")
-                st.markdown(f"**OS:** {row['OS']}")
-                st.markdown(f"**Subscription:** {row['Subscription_ID']}")
-                st.markdown("---")
-        else:
-            st.markdown("### No Azure resources found for this customer.")
-        
-        # Show recent GitLab pipeline jobs
-        if not gitlab_filtered.empty:
-            st.markdown("### Recent GitLab Pipelines")
-            for _, row in gitlab_filtered.iterrows():
-                st.markdown(f"**Pipeline Name:** {row['Pipeline_Name']}")
-                st.markdown(f"**Job Status:** {row['Status']}")
-                st.markdown(f"**Pipeline URL:** {row['Pipeline_URL']}")
-                st.markdown(f"**Job ID:** {row['Job_ID']}")
-                st.markdown("---")
-        else:
-            st.markdown("### No recent GitLab pipelines found for this customer.")
-        
-        # Show open incidents and cases from ServiceNow
-        if not servicenow_filtered.empty:
-            st.markdown("### Open Incidents and Cases")
-            for _, row in servicenow_filtered.iterrows():
-                st.markdown(f"**Case ID:** {row['Case_ID']}")
-                st.markdown(f"**Summary:** {row['Summary']}")
-                st.markdown(f"**Related KB:** {row['Related_KB']}")
-                st.markdown("---")
-        else:
-            st.markdown("### No open incidents or cases found for this customer.")
-        
-        # Show relevant Knowledge articles
-        if not kb_filtered.empty:
-            st.markdown("### Suggested Knowledge Articles")
-            for _, row in kb_filtered.iterrows():
-                st.markdown(f"**Article Link:** [{row['Article_Link']}]")
-                st.markdown(f"**Summary:** {row['Summary']}")
-                st.markdown("---")
-        else:
-            st.markdown("### No relevant Knowledge Articles found for this customer.")
+# Search UI
+query = st.text_input("Ask me about an error you're facing:")
 
-# Input field for customer name (allowing flexibility in the input)
-customer_input = st.text_input("Enter Customer Query:")
-
-# Extract just the customer name if extra context is given in the input
-def extract_customer_name(input_text):
-    # We assume the customer name follows the word "customer" in the query
-    input_text = input_text.strip().lower()  # To handle case insensitivity
-    words = input_text.split()
+if query:
+    st.markdown('<div class="typing"><span></span><span></span><span></span></div>', unsafe_allow_html=True)
     
-    if 'customer' in words:
-        # Extract customer name after the word "customer"
-        customer_name = words[words.index('customer') + 1]
-    else:
-        # If no 'customer' word is found, use the whole input as the customer name
-        customer_name = input_text
-    
-    return customer_name
+    query_embedding = model.encode(query, convert_to_tensor=True)
+    scores = [util.pytorch_cos_sim(query_embedding, row)[0][0].item() for row in df["embedding"]]
+    best_idx = scores.index(max(scores))
 
-if customer_input:
-    # Extract customer name
-    customer_name = extract_customer_name(customer_input)
-    display_customer_info(customer_name)
+    st.markdown('<div class="result-card">', unsafe_allow_html=True)
+    st.markdown(f"**🆔 Error Code:** {df.iloc[best_idx]['Error Code']}")
+    st.markdown(f"**💬 Message:** {df.iloc[best_idx]['Error Message']}")
+    st.markdown(f"**🧠 Likely Cause:** {df.iloc[best_idx]['Cause']}")
+    st.markdown(f"**🛠 Suggested Fix:** {df.iloc[best_idx]['Resolution Steps']}")
+    st.markdown('</div>', unsafe_allow_html=True)
